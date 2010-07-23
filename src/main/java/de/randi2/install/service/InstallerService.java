@@ -1,5 +1,7 @@
 package de.randi2.install.service;
 
-public class InstallerService {
+import de.randi2.services.AbstractService;
+
+public interface InstallerService {
 
 }
