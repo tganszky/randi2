@@ -18,7 +18,7 @@ import de.randi2.utility.validations.EMailRANDI2;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "login"})
 @ToString(exclude = { "login" })
 public class Configuration extends AbstractDomainObject {
 
