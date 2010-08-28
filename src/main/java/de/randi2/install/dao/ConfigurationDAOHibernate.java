@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  */
 @Service("configurationDao")
 public class ConfigurationDAOHibernate extends AbstractDaoHibernate<Configuration> implements
-ConfigurationDAO {
+ConfigurationDao {
 
 	@Override
 	public Class<Configuration> getModelClass() {

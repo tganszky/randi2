@@ -68,7 +68,24 @@ public class DomainObjectFactory {
 	
 	public Configuration getConfiguration(){
 		Configuration c = new Configuration();
+		
 		c.setLogin(getLogin());
+		
+		c.setInfo_hoster("Info Hoster");
+		c.setInfo_server("info server");
+		c.setMail_from("mailfrom@example.net");
+		c.setMail_host("@example.net");
+		c.setMail_password("password");
+		c.setMail_username("mail user");
+		c.setPop_abouttext1("about text1");
+		c.setPop_header("pop header");
+		c.setPop_header_abouttext1("header abouttext1");
+		c.setPop_header_info_hoster("pop info hoster");
+		c.setPop_info_hoster("info hoster");
+		c.setRandi2_version("version");
+		c.setSysopMail("sysomail@example.net");
+		c.setWebsite1("www.randi2.org");
+		c.setWebsite2("");
 		
 		return c;
 	}

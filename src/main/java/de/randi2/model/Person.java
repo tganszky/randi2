@@ -17,7 +17,6 @@
  */
 package de.randi2.model;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -43,44 +42,38 @@ import de.randi2.utility.validations.TelephonNumber;
  * The Class Person.
  */
 @Entity
-
-/**
- * Sets the login.
- * 
- * @param login
- *            the new login
- */
 @Data
-@EqualsAndHashCode(callSuper=true, exclude={"login","trialSite", "assistant"})
-@ToString(exclude={"login","trialSite"})
+@EqualsAndHashCode(callSuper = true, exclude = { "login", "trialSite",
+		"assistant" })
+@ToString(exclude = { "login", "trialSite" })
 public class Person extends AbstractDomainObject {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5713870200930075449L;
-	
+
 	/** The Constant MAX_NAME_LENGTH. */
 	public final static int MAX_NAME_LENGTH = 50;
-	
+
 	/** The Constant MAX_TITLE_LENGTH. */
 	public final static int MAX_TITLE_LENGTH = 20;
-	
+
 	// Persons Data
 	/** The surname. */
 	@NotEmpty
-	@Length(max=MAX_NAME_LENGTH)
+	@Length(max = MAX_NAME_LENGTH)
 	private String surname = "";
-	
+
 	/** The firstname. */
 	@NotEmpty
-	@Length(max=MAX_NAME_LENGTH)
+	@Length(max = MAX_NAME_LENGTH)
 	private String firstname = "";
-	
+
 	/** The title. */
-	@Length(max=MAX_TITLE_LENGTH)
+	@Length(max = MAX_TITLE_LENGTH)
 	private String title = "";
-	
+
 	/** The sex. */
-	@Enumerated(value=EnumType.STRING)
+	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	private Gender sex = Gender.MALE;
 
@@ -94,7 +87,6 @@ public class Person extends AbstractDomainObject {
 	@TelephonNumber
 	@NotEmpty
 	private String phone = "";
-	
 
 	/** The mobile. */
 	@TelephonNumber
@@ -103,27 +95,29 @@ public class Person extends AbstractDomainObject {
 	/** The fax. */
 	@TelephonNumber
 	private String fax = "";
-	
+
 	// Institutional Data
 	/** The assistant. */
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@ContactPerson
 	private Person assistant;
-	
+
 	/** The trial site. */
 	@ManyToOne
 	private TrialSite trialSite;
 
 	// Login data
 	/** The login. */
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="person")
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "person")
 	private Login login;
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.randi2.model.AbstractDomainObject#getUIName()
 	 */
 	@Override
 	public String getUIName() {
-		return this.getSurname()+", "+this.getFirstname();
+		return this.getSurname() + ", " + this.getFirstname();
 	}
 }
