@@ -4,6 +4,7 @@ import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import de.randi2.install.domain.Configuration;
 import de.randi2.model.Login;
 import de.randi2.model.Person;
 import de.randi2.model.Role;
@@ -63,6 +64,13 @@ public class DomainObjectFactory {
 		l.setLastLoggedIn(new GregorianCalendar());
 		
 		return l;
+	}
+	
+	public Configuration getConfiguration(){
+		Configuration c = new Configuration();
+		c.setLogin(getLogin());
+		
+		return c;
 	}
 	
 	

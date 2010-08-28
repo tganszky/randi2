@@ -1,56 +1,45 @@
 package de.randi2.install.service;
 
+import java.io.File;
+
 import de.randi2.install.domain.Configuration;
-import de.randi2.model.Trial;
-import de.randi2.services.AbstractService;
 
 
 /**
  * All installation-relevant services.
  * 
- * @author Thomas Ganszky 
+ * @author Thomas Ganszky
  */
 interface InstallerService {
 
 	/**
 	 * 
-	 * Check if RANDI2 has already been installed
-	 * @return true if RANDI2 is not already installed, otherwise return false
-	 */
-	public boolean checkIfFirstInstallation();
-	
-	/**
-	 * required actions?
-	 */
-	public void installRandi();
-	
-	/**
+	 * Apply created Configuration to this installation
 	 * 
-	 * Check if DB Connection is available
-	 * 
-	 * @return true if DB conn available
 	 */
-	public boolean checkDBConn();
-	
+	public void applyConfiguration(Configuration c);
+
 	/**
 	 * Returns current Configuration of this randi2 installation
+	 * 
 	 * @return configuration of this randi2 installation
 	 */
 	public Configuration getInstallationConfig();
-	
-	/**
-	 * Stores a new config object in the system.
-	 * 
-	 * @param newConfig
-	 */
-	public void create(Configuration newConfig);
 
 	/**
-	 * Updates the configuration object and returns the its newest version.
+	 * Returns current Configuration of this randi2 installation as a .conf file
 	 * 
-	 * @param config changed Configuration
-	 * @return
+	 * @return file with all configuration parameters
 	 */
-	public Configuration update(Configuration config);
+
+	public File getCurrentConfiguration();
+
+	
+	/**
+	 * Checks if randi2 has already been configured for usage.
+	 * 
+	 * @return true, if already configured; false, if not condfigured; exception, if check wasnt possible
+	 */
+	public boolean isConfigured() throws Exception;
 
 }
