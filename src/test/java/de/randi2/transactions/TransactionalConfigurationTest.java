@@ -1,7 +1,7 @@
 package de.randi2.transactions;
 
 import de.randi2.dao.ConfigurationDao;
-import de.randi2.install.domain.Configuration;
+import de.randi2.model.Configuration;
 
 
 

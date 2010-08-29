@@ -30,6 +30,7 @@
 	<import resource="classpath:META-INF/subconfig/security.xml" />
 	<import resource="classpath:META-INF/subconfig/mail-test.xml" />
 	<import resource="classpath:META-INF/subconfig/services.xml"/>
+	<import resource="classpath:META-INF/subconfig/installer.xml"/>
 	
 	<import resource="classpath:META-INF/subconfig/logging.xml"/>
 

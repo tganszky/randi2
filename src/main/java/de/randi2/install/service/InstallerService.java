@@ -2,7 +2,7 @@ package de.randi2.install.service;
 
 import java.io.File;
 
-import de.randi2.install.domain.Configuration;
+import de.randi2.model.Configuration;
 
 
 /**
