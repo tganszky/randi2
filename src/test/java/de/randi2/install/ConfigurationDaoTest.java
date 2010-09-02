@@ -44,7 +44,7 @@ public class ConfigurationDaoTest {
 
 		Configuration c = factory.getConfiguration();
 		
-		c.setMail_username("test");
+		
 		
 		dao.create(c);
 	
@@ -55,16 +55,6 @@ public class ConfigurationDaoTest {
 
 	@Test
 	public void testSaveWithLogin() {
-		validConfig.setPop_abouttext1("abouttext");
-		validConfig.setInfo_hoster("info hoster");
-		validConfig.setInfo_server("info server");
-
-		validConfig.setMail_from("mail from");
-		validConfig.setMail_host("mail host");
-		validConfig.setMail_password("mail pwd");
-		validConfig.setMail_username("mail username");
-		validConfig.setRandi2_version("versionsnummer");
-		validConfig.setSysopMail("just another email");
 
 		try {
 			dao.update(validConfig);

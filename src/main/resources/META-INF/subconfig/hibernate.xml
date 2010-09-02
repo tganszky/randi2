@@ -16,6 +16,7 @@
 			<property name="annotatedClasses">
 				<list>
 					<value>de.randi2.utility.logging.LogEntry</value>
+					<value>de.randi2.install.domain.Configuration</value>
 				</list>
 			</property>
 			<property name="eventListeners">
@@ -46,5 +47,6 @@
 		<property name="sessionFactory" ref="sessionFactory"></property>
 		<property name="hibernateManagedSession" ref="hibernateManagedSession"/>
 	</bean>
+
 
 </beans>

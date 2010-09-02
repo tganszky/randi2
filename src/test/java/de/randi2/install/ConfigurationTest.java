@@ -47,21 +47,7 @@ public class ConfigurationTest extends AbstractDomainTest<Configuration> {
 		Person p = new Person();
 	
 		assertEquals("", p.getFirstname());
-		assertEquals("", c.getMail_host());
-		assertEquals("", c.getMail_username());
-		assertEquals("", c.getMail_password());
-		assertEquals("", c.getMail_from());
-		assertEquals("", c.getInfo_server());
-		assertEquals("", c.getSysopMail());
-		assertEquals("", c.getRandi2_version());
-		assertEquals("", c.getWebsite1());
-		assertEquals("", c.getWebsite2());
-		assertEquals("", c.getPop_header_abouttext1());
-		assertEquals("", c.getPop_abouttext1());
-		assertEquals("", c.getPop_header());
-		assertEquals("", c.getPop_header_info_hoster());
-		assertEquals("", c.getPop_info_hoster());
-		assertEquals("", c.getInfo_hoster());
+		
 	}
 
 	

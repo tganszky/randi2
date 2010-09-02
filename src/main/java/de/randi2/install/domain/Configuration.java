@@ -1,7 +1,7 @@
 package de.randi2.install.domain;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Entity;
+import javax.persistence.Entity; 
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
@@ -15,8 +15,12 @@ import lombok.ToString;
 import de.randi2.model.AbstractDomainObject;
 import de.randi2.model.Login;
 import de.randi2.utility.validations.EMailRANDI2;
-
-//@Entity
+/**
+ * Configuration
+ * @author tg
+ *
+ */
+@Entity
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = { "login"})
 @ToString(exclude = { "login" })
@@ -36,8 +40,6 @@ public class Configuration extends AbstractDomainObject {
 
 	/** The Login of the first user. */
 	@NotNull
-	@NotEmpty
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "person")
 	private Login login;
 
 	
@@ -46,20 +48,13 @@ public class Configuration extends AbstractDomainObject {
 	 */
 	@EMailRANDI2
 	@NotEmpty
-	private String mail_from;
+	private String mailFrom;
 
 	/**
 	 *  Server Address, eg."http://randi2.org"
 	 */
 	@NotNull
 	private String hostingServerAddress;
-
-	/**
-	 * Email address of this installations Sysop
-	 */
-	@EMailRANDI2
-	@NotEmpty
-	private String sysopMail;
 
 	// ****************
 	// Information Part
@@ -83,7 +78,7 @@ public class Configuration extends AbstractDomainObject {
 	 * About this installation-header
 	 */
 	@NotNull
-	private String headerinstallationInformationText;
+	private String headerInstallationInformationText;
 
 	// pages.aboutPopup.content
 	/**
@@ -93,21 +88,7 @@ public class Configuration extends AbstractDomainObject {
 	private String installationInformationText;
 
 
-	//TODO next 2 Headers could also be static
-	// pages.aboutPopup.header
-	/**
-	 * About this installation-header
-	 */
-	@NotNull
-	private String pop_header;
-
 	
-	// pages.aboutPopup.info2
-	/**
-	 * About this installation-header eg. "About this installation"
-	 */
-	@NotNull
-	private String installationInfoHeader;
 
 	// pages.aboutPopup.hostingInst
 	/**
@@ -125,4 +106,6 @@ public class Configuration extends AbstractDomainObject {
 
 	
 
+	
+	
 }
