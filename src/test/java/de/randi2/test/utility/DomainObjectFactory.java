@@ -4,7 +4,7 @@ import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.randi2.model.Configuration;
+import de.randi2.install.domain.Configuration;
 import de.randi2.model.Login;
 import de.randi2.model.Person;
 import de.randi2.model.Role;
@@ -71,18 +71,15 @@ public class DomainObjectFactory {
 		
 		c.setLogin(getLogin());
 		
-		c.setInfo_hoster("Info Hoster");
-		c.setInfo_server("info server");
-		c.setMail_from("mailfrom@example.net");
-		c.setMail_host("@example.net");
-		c.setMail_password("password");
-		c.setMail_username("mail user");
-		c.setPop_abouttext1("about text1");
-		c.setPop_header("pop header");
-		c.setPop_header_abouttext1("header abouttext1");
-		c.setPop_header_info_hoster("pop info hoster");
-		c.setPop_info_hoster("info hoster");
-		c.setRandi2_version("version");
+		c.setInfoAboutHoster("Info Hoster");
+		c.setHeaderinstallationInformationText("HEader of IIT");
+		c.setHostingServerAddress("hostingServerAddress");
+		c.setInfoAboutHoster("infoAboutHoster");
+		c.setInfoAboutInstallation("infoAboutInstallation");
+		c.setInstallationInfoHeader("installationInfoHeader");
+		c.setInstallationInformationText("installationInformationText");
+		c.setMail_from("mail_from@axample.net");
+		c.setPop_header("pop_header");
 		c.setSysopMail("sysomail@example.net");
 		c.setWebsite1("www.randi2.org");
 		c.setWebsite2("");

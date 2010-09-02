@@ -30,6 +30,6 @@
 	<import resource="classpath:META-INF/subconfig/services.xml"/>
 	<import resource="classpath:META-INF/subconfig/logging.xml"/>
 	<import resource="classpath:META-INF/subconfig/mail.xml" />
-	
+	<import resource="classpath:META-INF/subconfig/installer.xml" />
 
 </beans>

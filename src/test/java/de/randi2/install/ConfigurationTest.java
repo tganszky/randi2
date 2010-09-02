@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.randi2.model.Configuration;
+import de.randi2.install.domain.Configuration;
 import de.randi2.model.Person;
 import de.randi2.model.exceptions.ValidationException;
 import de.randi2.test.utility.AbstractDomainTest;

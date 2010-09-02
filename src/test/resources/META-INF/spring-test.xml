@@ -32,6 +32,7 @@
     <import resource="classpath:META-INF/subconfig/hibernate.xml" />
     <import resource="classpath:META-INF/subconfig/services.xml" />
     <import resource="classpath:META-INF/subconfig/mail-test.xml" />
+    <import resource="classpath:META-INF/subconfig/install-test.xml" />
     <bean id="passwordEncoder"
 		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
         <constructor-arg value="256" />

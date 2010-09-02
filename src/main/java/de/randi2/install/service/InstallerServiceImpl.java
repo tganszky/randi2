@@ -5,7 +5,7 @@ import java.io.File;
 
 import org.springframework.stereotype.Service;
 
-import de.randi2.model.Configuration;
+import de.randi2.install.domain.Configuration;
 
 @Service("InstallerService")
 public class InstallerServiceImpl   implements  InstallerService{
