@@ -72,15 +72,10 @@ public class DomainObjectFactory {
 		c.setLogin(getLogin());
 		
 		c.setInfoAboutHoster("Info Hoster");
-		c.setHeaderinstallationInformationText("HEader of IIT");
 		c.setHostingServerAddress("hostingServerAddress");
 		c.setInfoAboutHoster("infoAboutHoster");
 		c.setInfoAboutInstallation("infoAboutInstallation");
-		c.setInstallationInfoHeader("installationInfoHeader");
 		c.setInstallationInformationText("installationInformationText");
-		c.setMail_from("mail_from@axample.net");
-		c.setPop_header("pop_header");
-		c.setSysopMail("sysomail@example.net");
 		c.setWebsite1("www.randi2.org");
 		c.setWebsite2("");
 		
