@@ -1,30 +1,32 @@
 package de.randi2.install.integration.dao;
 
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static de.randi2.testUtility.utility.RANDI2Assert.assertNotSaved;
+import static de.randi2.testUtility.utility.RANDI2Assert.assertSaved;
+import static junit.framework.Assert.*;
+import java.util.List;
 
-import org.hibernate.validator.InvalidStateException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mchange.util.AssertException;
 
 import de.randi2.install.dao.ConfigurationDao;
 import de.randi2.install.domain.Configuration;
 import de.randi2.testUtility.utility.DomainObjectFactory;
 import de.randi2.testUtility.utility.TestStringUtil;
 
-
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/META-INF/spring-test.xml" })
+@Transactional
 public class ConfigurationDaoTest {
 
 	@Autowired
-	private ConfigurationDao dao;
+	private ConfigurationDao configDao;
 	@Autowired
 	private DomainObjectFactory factory;
 	@Autowired
@@ -35,38 +37,37 @@ public class ConfigurationDaoTest {
 	@Before
 	public void setUp() {
 		validConfig = factory.getConfiguration();
-	
+
 	}
 
 	@Test
 	public void createAndSaveTest() {
 
 		Configuration c = factory.getConfiguration();
-		
-		
-		
-		dao.create(c);
-	
-		assertNotNull(dao);
-		assertNotNull(dao.get(c.getId()));
+
+		assertNotSaved(c);
+		configDao.create(c);
+		assertSaved(c);
+
+		assertNotNull(configDao.get(c.getId()));
 
 	}
 
 	@Test
-	public void testSaveWithLogin() {
+	public void testGetConfig() {
+		Configuration c = factory.getConfiguration();
+		String s = "creation@exmple.net";
+		c.setMailFrom(s);
+		configDao.create(c);
 
-		try {
-			dao.update(validConfig);
+		List<Configuration> l = configDao.getAll();
 
-		} catch (InvalidStateException e) {
-		}
+		assertNotNull(l);
+		assertTrue(l.size() == 1);
+		assertNotNull("This assertion failed", l.get(0));
+		Configuration d = l.get(0);
+		assertEquals(s, d.getMailFrom());
+
 	}
 
-	@Ignore
-	public void testGetAll() {
-		for (int i = 0; i < 100; i++) {
-			dao.create(factory.getConfiguration());
-		}
-		assertTrue("getAll failed", dao.getAll().size() > 100);
-	}
 }

@@ -1,5 +1,7 @@
 package de.randi2.install.domain;
 
+import java.net.URL;
+
 import javax.persistence.Entity;
 
 import lombok.Data;
@@ -12,6 +14,7 @@ import org.hibernate.validator.NotNull;
 import de.randi2.model.AbstractDomainObject;
 import de.randi2.model.Login;
 import de.randi2.utility.validations.EMailRANDI2;
+import de.randi2.utility.validations.UrlRANDI2;
 
 /**
  * Configuration
@@ -49,6 +52,7 @@ public class Configuration extends AbstractDomainObject {
 	/**
 	 * Server Address, eg."http://randi2.org"
 	 */
+	@UrlRANDI2
 	@NotNull
 	private String hostingServerAddress;
 
@@ -59,18 +63,19 @@ public class Configuration extends AbstractDomainObject {
 	/**
 	 * Address of institution website
 	 */
+	@UrlRANDI2
 	@NotNull
 	private String website1;
 
 	/**
 	 * Address of additional website (eg. trial site)
 	 */
-	@NotNull
+	@UrlRANDI2
 	private String website2;
 
 	/**
 	 * Hosting institution may enter some information text to describe this
-	 * installation, e.g. about usage of this installation, 
+	 * installation, e.g. about usage of this installation,
 	 */
 	@NotNull
 	private String installationInformationText;
