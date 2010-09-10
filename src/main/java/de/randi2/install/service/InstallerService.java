@@ -20,6 +20,13 @@ interface InstallerService {
 	public void applyConfiguration(Configuration c);
 
 	/**
+	 * 
+	 * Apply created Configuration to this installation
+	 * 
+	 */
+	public void applyConfiguration(File f);
+	
+	/**
 	 * Returns current Configuration of this randi2 installation
 	 * 
 	 * @return configuration of this randi2 installation
