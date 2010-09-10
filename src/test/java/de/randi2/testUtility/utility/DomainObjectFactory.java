@@ -71,9 +71,8 @@ public class DomainObjectFactory {
 		
 		c.setLogin(getLogin());
 		
-		c.setInfoAboutHoster("Info Hoster");
+		c.setInfoAboutHost("Info Hoster");
 		c.setHostingServerAddress("hostingServerAddress");
-		c.setInfoAboutHoster("infoAboutHoster");
 		c.setInfoAboutInstallation("infoAboutInstallation");
 		c.setInstallationInformationText("installationInformationText");
 		c.setWebsite1("www.randi2.org");

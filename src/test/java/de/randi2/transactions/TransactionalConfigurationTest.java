@@ -1,5 +1,6 @@
 package de.randi2.transactions;
 
+import de.randi2.core.integration.transactions.AbstractTransactionalTest;
 import de.randi2.install.dao.ConfigurationDao;
 import de.randi2.install.domain.Configuration;
 

@@ -1,19 +1,17 @@
-package de.randi2.install;
+package de.randi2.install.unit.model;
 
 import static org.junit.Assert.*;
 
 import java.util.Map;
 
-import org.hibernate.validator.InvalidStateException;
-import org.hibernate.validator.InvalidValue;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.randi2.install.domain.Configuration;
 import de.randi2.model.Person;
 import de.randi2.model.exceptions.ValidationException;
-import de.randi2.test.utility.AbstractDomainTest;
+import de.randi2.testUtility.utility.AbstractDomainTest;
+
 
 /**
  * Validation and Tests for Configuration Objects

@@ -34,6 +34,12 @@ public class InstallerServiceImpl   implements  InstallerService{
 		return false;
 	}
 
+	@Override
+	public void applyConfiguration(File f) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 	

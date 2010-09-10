@@ -1,28 +1,27 @@
 package de.randi2.install.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity; 
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-
-import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
+import javax.persistence.Entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+
 import de.randi2.model.AbstractDomainObject;
 import de.randi2.model.Login;
 import de.randi2.utility.validations.EMailRANDI2;
+
 /**
  * Configuration
- * @author tg
- *
+ * 
+ * @author Thomas Ganszky
+ * 
  */
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = { "login"})
+@EqualsAndHashCode(callSuper = true, exclude = { "login" })
 @ToString(exclude = { "login" })
 public class Configuration extends AbstractDomainObject {
 
@@ -36,13 +35,10 @@ public class Configuration extends AbstractDomainObject {
 	// Technical Part
 	// ****************
 
-	// TODO not sure about the required items for mail configuration
-
-	/** The Login of the first user. */
+	/** The Login of the very first user. */
 	@NotNull
 	private Login login;
 
-	
 	/**
 	 * sender-address of mailserver eg."randi2@example.net"
 	 */
@@ -51,7 +47,7 @@ public class Configuration extends AbstractDomainObject {
 	private String mailFrom;
 
 	/**
-	 *  Server Address, eg."http://randi2.org"
+	 * Server Address, eg."http://randi2.org"
 	 */
 	@NotNull
 	private String hostingServerAddress;
@@ -60,7 +56,6 @@ public class Configuration extends AbstractDomainObject {
 	// Information Part
 	// ****************
 
-	
 	/**
 	 * Address of institution website
 	 */
@@ -73,22 +68,12 @@ public class Configuration extends AbstractDomainObject {
 	@NotNull
 	private String website2;
 
-	// pages.aboutPopup.header
 	/**
-	 * About this installation-header
-	 */
-	@NotNull
-	private String headerInstallationInformationText;
-
-	// pages.aboutPopup.content
-	/**
-	 * About this installation
+	 * Hosting institution may enter some information text to describe this
+	 * installation, e.g. about usage of this installation, 
 	 */
 	@NotNull
 	private String installationInformationText;
-
-
-	
 
 	// pages.aboutPopup.hostingInst
 	/**
@@ -98,14 +83,10 @@ public class Configuration extends AbstractDomainObject {
 	private String infoAboutInstallation;
 
 	/**
-	 * short Information about hoster, eg. "Randi2 Team"
+	 * short Information about host or hosting company, e.g. "Randi2 Team"
 	 * 
 	 */
 	@NotNull
-	private String infoAboutHoster;
+	private String infoAboutHost;
 
-	
-
-	
-	
 }

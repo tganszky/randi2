@@ -97,13 +97,8 @@ public class Person extends AbstractDomainObject {
 	private String fax = "";
 
 	// Institutional Data
-<<<<<<< HEAD
-	/** The assistant. */
-	@ManyToOne(cascade = CascadeType.ALL)
-=======
 	/** The assistant. This person has no Login object. */
-	@ManyToOne(cascade=CascadeType.ALL)
->>>>>>> randi2Master
+	@ManyToOne(cascade = CascadeType.ALL)
 	@ContactPerson
 	private Person assistant;
 

@@ -1,8 +1,7 @@
-package de.randi2.install;
+package de.randi2.install.integration.dao;
 
-import static de.randi2.test.utility.RANDI2Assert.assertNotSaved;
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.hibernate.validator.InvalidStateException;
 import org.junit.Before;
@@ -15,10 +14,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.randi2.install.dao.ConfigurationDao;
 import de.randi2.install.domain.Configuration;
+import de.randi2.testUtility.utility.DomainObjectFactory;
+import de.randi2.testUtility.utility.TestStringUtil;
 
 
-import de.randi2.test.utility.DomainObjectFactory;
-import de.randi2.test.utility.TestStringUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/META-INF/spring-test.xml" })
