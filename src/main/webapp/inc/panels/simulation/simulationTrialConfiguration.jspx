@@ -14,23 +14,25 @@
  You should have received a copy of the GNU General Public License along with
  RANDI2. If not, see http://www.gnu.org/licenses/.
  -->
- <ice:panelGrid columns="2">
+ <ice:panelGrid columns="2" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
 <ice:panelCollapsible expanded="true" toggleOnClick="false">
 			<f:facet name="header">
-				<ice:outputLabel value="#{labels['trial.name']}"></ice:outputLabel>
+				<ice:outputLabel value="#{labels['trial.name']}"/>
 			</f:facet>
 			<ice:inputText size="35"  partialSubmit="true" value="#{simulationHandler.simTrial.name}"/>
 </ice:panelCollapsible>
 <ice:panelCollapsible expanded="true" toggleOnClick="false">
 			<f:facet name="header">
-				<ice:outputLabel value="#{labels['pages.simulation.countTrialSite']}"></ice:outputLabel>
+				<ice:outputLabel value="#{labels['pages.simulation.countTrialSite']}"/>
 			</f:facet>
 			<ice:inputText size="35"  partialSubmit="true" value="#{simulationHandler.countTrialSites}" />
 </ice:panelCollapsible>
 </ice:panelGrid>
 <!-- Configuration for treatment arms -->
 <ice:panelGrid columns="3">
-	<ice:outputLabel value="#{labels['pages.trialEditPanel.tArmLabel']}" />
+	<ice:outputLabel value="#{labels['pages.trialCreatePanel.tArmLabel']}" />
 	<ice:commandButton image="/img/icons/add16.png"
 		actionListener="#{simulationHandler.addArm}" style="margin-right:5px;"
 		immediate="true" />
@@ -39,7 +41,7 @@
 		actionListener="#{simulationHandler.removeArm}" immediate="true" />
 </ice:panelGrid>
 <ice:panelGroup styleClass="clearer">
-	<ice:messages tooltip="true" showDetail="false" showSummary="true" />
+	<ice:messages tooltip="true" showDetail="false" showSummary="true" errorClass="errorMsg" layout="table"/>
 </ice:panelGroup>
 <ice:panelGroup styleClass="exampleBox">
 	<ice:panelSeries value="#{simulationHandler.simTrial.treatmentArms}"
@@ -51,7 +53,7 @@
 </ice:panelGroup>
 <!-- Configuration for subject properties -->
 <ice:panelGrid columns="4">
-	<ice:outputLabel value="#{labels['pages.trialEditPanel.propLabel']}" />
+	<ice:outputLabel value="#{labels['pages.trialCreatePanel.propLabel']}" />
 	<ice:selectInputText id="critera"
 		valueChangeListener="#{simulationSubjectProperty.criteriaAC.updateObjectList}" rows="10"
 		width="200">

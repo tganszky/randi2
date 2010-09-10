@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
 	private MailServiceInterface mailService;
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void addRole(Login login, Role role) {
 
 		if (login != null && role != null && role.getId() > 0
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void createRole(Role newRole) {
 		logger.info("user: "
 				+ SecurityContextHolder.getContext().getAuthentication()
@@ -91,6 +93,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void deleteRole(Role oldRole) {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("not yet implemented");
@@ -128,7 +131,6 @@ public class UserServiceImpl implements UserService {
 		loginDao.create(newObject);
 		// send registration Mail
 		sendRegistrationMail(newObject);
-
 	}
 
 	/*
@@ -188,6 +190,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void removeRole(Login login, Role role) {
 		if (login != null && login.getId() > 0 && role != null
 				&& role.getId() > 0 && login.getRoles().contains(role)) {
@@ -222,8 +225,12 @@ public class UserServiceImpl implements UserService {
 
 		Locale language = newUser.getPrefLocale();
 
-		mailService.sendMail(newUser.getPerson().getEmail(), "NewUserMail",
-				language, newUserMessageFields, newUserSubjectFields);
+		try {
+			mailService.sendMail(newUser.getPerson().getEmail(), "NewUserMail",
+					language, newUserMessageFields, newUserSubjectFields);
+		} catch (MailErrorException e) {
+			logger.error("Mail error", e);
+		}
 
 		if (newUser.getPerson().getTrialSite() != null
 				&& newUser.getPerson().getTrialSite().getContactPerson() != null) {
@@ -245,10 +252,15 @@ public class UserServiceImpl implements UserService {
 					.getPerson().getFirstname());
 			contactPersonSubjectFields.put("newUserLastname", newUser
 					.getPerson().getSurname());
-
-			mailService.sendMail(contactPerson.getEmail(),
+			contactPersonSubjectFields.put("trialSite", newUser.getPerson().getTrialSite().getName());
+			
+			try {
+				mailService.sendMail(contactPerson.getEmail(),
 						"NewUserNotifyContactPersonMail", language,
 						contactPersonMessageFields, contactPersonSubjectFields);
+			} catch (MailErrorException e) {
+				logger.error("Mail error", e);
+			}
 		}
 	}
 

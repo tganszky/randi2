@@ -12,22 +12,16 @@ import javax.faces.event.ActionEvent;
 
 import lombok.Getter;
 import lombok.Setter;
-import de.randi2.jsf.backingBeans.Step4;
-import de.randi2.jsf.backingBeans.Step5;
+import de.randi2.jsf.backingBeans.SubjectPropertiesConfig;
 import de.randi2.jsf.supportBeans.Popups;
 import de.randi2.jsf.wrappers.ConstraintWrapper;
 import de.randi2.jsf.wrappers.CriterionWrapper;
-import de.randi2.model.AbstractDomainObject;
 import de.randi2.model.TreatmentArm;
 import de.randi2.model.Trial;
 import de.randi2.model.criteria.AbstractCriterion;
 import de.randi2.model.criteria.DichotomousCriterion;
 import de.randi2.model.criteria.constraints.AbstractConstraint;
 import de.randi2.model.criteria.constraints.DichotomousConstraint;
-import de.randi2.model.randomization.AbstractRandomizationConfig;
-import de.randi2.model.randomization.BiasedCoinRandomizationConfig;
-import de.randi2.model.randomization.CompleteRandomizationConfig;
-import de.randi2.model.randomization.TruncatedBinomialDesignConfig;
 import de.randi2.unsorted.ContraintViolatedException;
 import de.randi2.utility.ReflectionUtil;
 
@@ -56,13 +50,6 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 
 	protected ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>> criteriaList = null;
 
-	/*
-	 * Object needed for the randomization configuration process.
-	 */
-	@Setter
-	@Getter
-	private AbstractRandomizationConfig randomizationConfig;
-	
 	@SuppressWarnings("unchecked")
 	public AbstractTrialHandler() {
 		criteriaList = new ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>>();
@@ -130,13 +117,14 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 				.getApplication().getExpressionFactory()
 				.createValueExpression(
 						FacesContext.getCurrentInstance().getELContext(),
-						"#{step4}", Step4.class);
-		Step4 currentStep4 = (Step4) ve1.getValue(FacesContext
+						"#{subjectPropertiesConfig}", SubjectPropertiesConfig.class);
+		SubjectPropertiesConfig currentStep4 = (SubjectPropertiesConfig) ve1.getValue(FacesContext
 				.getCurrentInstance().getELContext());
 		/* End of SubjectProperites Configuration */
 		return addAllConfiguredCriteria(currentStep4.getCriteria());
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>> addAllConfiguredCriteria(ArrayList<CriterionWrapper<? extends Serializable>> criteriaList){
 		ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>> configuredCriteria = new ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>>();
 		for (CriterionWrapper<? extends Serializable> cr : criteriaList) {
@@ -172,39 +160,6 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 		return configuredCriteria;
 	}
 	
-	protected void configureAlgorithmWithStep5(){
-		/* Algorithm Configuration */
-		ValueExpression ve2 = FacesContext.getCurrentInstance()
-				.getApplication().getExpressionFactory()
-				.createValueExpression(
-						FacesContext.getCurrentInstance().getELContext(),
-						"#{step5}", Step5.class);
-		Step5 currentStep5 = (Step5) ve2.getValue(FacesContext
-				.getCurrentInstance().getELContext());
-		if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.COMPLETE_RANDOMIZATION.toString())) {
-			showedObject
-					.setRandomizationConfiguration(new CompleteRandomizationConfig());
-		} else if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.BIASEDCOIN_RANDOMIZATION.toString())) {
-			showedObject
-					.setRandomizationConfiguration(new BiasedCoinRandomizationConfig());
-		} else if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.BLOCK_RANDOMIZATION.toString())) {
-			showedObject.setRandomizationConfiguration(getRandomizationConfig());
-		} else if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.TRUNCATED_RANDOMIZATION.toString())) {
-			showedObject
-					.setRandomizationConfiguration(new TruncatedBinomialDesignConfig());
-		} else if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.URN_MODEL.toString())) {
-			showedObject.setRandomizationConfiguration(getRandomizationConfig());
-		}else if (currentStep5.getSelectedAlgorithmPanelId().equals(
-				Step5.AlgorithmPanelId.MINIMIZATION.toString())) {
-			showedObject.setRandomizationConfiguration(getRandomizationConfig());
-		}
-		/* End of the Algorithm Configuration */
-	}
 	
 	/**
 	 * Action listener for adding a new treatment arm.
@@ -212,9 +167,9 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 	 * @param event
 	 */
 	public void addArm(ActionEvent event) {
-		assert (showedObject != null);
+		assert (currentObject != null);
 		TreatmentArm temp = new TreatmentArm();
-		showedObject.getTreatmentArms().add(temp);
+		currentObject.getTreatmentArms().add(temp);
 	}
 
 	/**
@@ -223,9 +178,9 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 	 * @param event
 	 */
 	public void removeArm(ActionEvent event) {
-		assert (showedObject != null);
-		showedObject.getTreatmentArms().remove(
-				showedObject.getTreatmentArms().size() - 1);
+		assert (currentObject != null);
+		currentObject.getTreatmentArms().remove(
+				currentObject.getTreatmentArms().size() - 1);
 	}
 
 	/**
@@ -234,8 +189,8 @@ public abstract class AbstractTrialHandler extends AbstractHandler<Trial>{
 	 * @return
 	 */
 	public int getTreatmentArmsCount() {
-		assert (showedObject != null);
-		return showedObject.getTreatmentArms().size();
+		assert (currentObject != null);
+		return currentObject.getTreatmentArms().size();
 	}
 	
 	public ArrayList<AbstractCriterion<? extends Serializable, ? extends AbstractConstraint<? extends Serializable>>> getCriteriaList() {

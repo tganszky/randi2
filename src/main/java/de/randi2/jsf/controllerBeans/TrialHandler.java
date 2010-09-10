@@ -17,10 +17,6 @@
  */
 package de.randi2.jsf.controllerBeans;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,17 +27,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import lombok.Getter;
 import lombok.Setter;
-
-import com.icesoft.faces.context.ByteArrayResource;
-import com.icesoft.faces.context.FileResource;
-import com.icesoft.faces.context.Resource;
-
-import de.randi2.jsf.backingBeans.Step4;
-import de.randi2.jsf.backingBeans.Step5;
+import de.randi2.jsf.backingBeans.AlgorithmConfig;
+import de.randi2.jsf.backingBeans.SubjectPropertiesConfig;
+import de.randi2.jsf.supportBeans.Popups;
 import de.randi2.jsf.supportBeans.Randi2;
 import de.randi2.jsf.utility.AutoCompleteObject;
 import de.randi2.model.Login;
@@ -50,9 +40,9 @@ import de.randi2.model.Trial;
 import de.randi2.model.TrialSite;
 import de.randi2.model.TrialSubject;
 import de.randi2.model.enumerations.TrialStatus;
+import de.randi2.model.exceptions.TrialStateException;
 import de.randi2.services.TrialService;
 import de.randi2.services.TrialSiteService;
-import de.randi2.utility.BoxedException;
 import de.randi2.utility.logging.LogEntry;
 import de.randi2.utility.logging.LogService;
 
@@ -71,13 +61,19 @@ public class TrialHandler extends AbstractTrialHandler {
 	 */
 
 	@Setter
-	private TrialSiteService siteService = null;
+	private TrialSiteService siteService;
 
 	@Setter
-	private TrialService trialService = null;
+	private TrialService trialService;
 
 	@Setter
 	private LogService logService;
+
+	@Setter
+	private LoginHandler loginHandler;
+
+	@Setter
+	private Popups popups;
 
 	/**
 	 * Defindes if the randomization is possible or not.
@@ -87,15 +83,16 @@ public class TrialHandler extends AbstractTrialHandler {
 	/**
 	 * Defines if the current trial is currently edited or not.
 	 */
-	@Setter @Getter
+	@Setter
+	@Getter
 	private boolean editing = false;
 
 	/*
 	 * Auto complete objects for the trial creation process.
 	 */
-	private AutoCompleteObject<TrialSite> trialSitesAC = null;
-	private AutoCompleteObject<Login> sponsorInvestigatorsAC = null;
-	private AutoCompleteObject<TrialSite> participatingSitesAC = null;
+	private AutoCompleteObject<TrialSite> trialSitesAC;
+	private AutoCompleteObject<Login> sponsorInvestigatorsAC;
+	private AutoCompleteObject<TrialSite> participatingSitesAC;
 
 	/*
 	 * GET & SET methods
@@ -119,15 +116,25 @@ public class TrialHandler extends AbstractTrialHandler {
 	 * @return
 	 */
 	public AutoCompleteObject<Login> getSponsorInvestigatorsAC() {
-		if (sponsorInvestigatorsAC != null && trialSitesAC.isObjectSelected())
-			return sponsorInvestigatorsAC;
-		if (trialSitesAC.isObjectSelected())
-			sponsorInvestigatorsAC = new AutoCompleteObject<Login>(trialSitesAC
-					.getSelectedObject().getMembersWithSpecifiedRole(
-							Role.ROLE_P_INVESTIGATOR));
-		else
-			sponsorInvestigatorsAC = new AutoCompleteObject<Login>(
-					new ArrayList<Login>());
+		if (!editing) {
+			if (sponsorInvestigatorsAC != null
+					&& trialSitesAC.isObjectSelected())
+				return sponsorInvestigatorsAC;
+			if (trialSitesAC.isObjectSelected())
+				sponsorInvestigatorsAC = new AutoCompleteObject<Login>(
+						trialSitesAC.getSelectedObject()
+								.getMembersWithSpecifiedRole(
+										Role.ROLE_P_INVESTIGATOR));
+			else
+				sponsorInvestigatorsAC = new AutoCompleteObject<Login>(
+						new ArrayList<Login>());
+		} else {
+			if (sponsorInvestigatorsAC == null)
+				sponsorInvestigatorsAC = new AutoCompleteObject<Login>(
+						currentObject.getLeadingSite()
+								.getMembersWithSpecifiedRole(
+										Role.ROLE_P_INVESTIGATOR));
+		}
 		return sponsorInvestigatorsAC;
 	}
 
@@ -143,34 +150,6 @@ public class TrialHandler extends AbstractTrialHandler {
 		return participatingSitesAC;
 	}
 
-	// FIXME dummy method for the protocol download
-	public Resource getTempProtocol() {
-		if (showedObject != null && showedObject.getProtocol() != null)
-			return new FileResource(showedObject.getProtocol());
-		else
-			try {
-				return new ByteArrayResource(toByteArray(FacesContext
-						.getCurrentInstance().getExternalContext()
-						.getResourceAsStream("/protocol.pdf")));
-			} catch (MalformedURLException e) {
-				BoxedException.throwBoxed(e);
-			} catch (IOException e) {
-				BoxedException.throwBoxed(e);
-			}
-		return null;
-	}
-
-	// TODO Probably not the best place for this method ... after the decision
-	// about the protocol files has been made, rethink this solution
-	public static byte[] toByteArray(InputStream input) throws IOException {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		byte[] buf = new byte[4096];
-		int len = 0;
-		while ((len = input.read(buf)) > -1)
-			output.write(buf, 0, len);
-		return output.toByteArray();
-	}
-
 	/**
 	 * Specifies if the user can add subject to the current study.
 	 * 
@@ -178,13 +157,14 @@ public class TrialHandler extends AbstractTrialHandler {
 	 */
 	public boolean isAddingSubjectsEnabled() {
 		// TODO Inject the trial state logic
-		addingSubjectsEnabled = !creatingMode && showedObject != null;
+		addingSubjectsEnabled = !creatingMode && currentObject != null;
 		return addingSubjectsEnabled;
 	}
 
 	public boolean isEditable() {
-		Login currentUser = ((Login) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal());
+		// TODO Check if it's possible do declare LoginHandler as a member of
+		// this bean with JSF2.0
+		Login currentUser = loginHandler.getLoggedInUser();
 		/*
 		 * Checking if the current user is an principal investigator and if he
 		 * is defined as the principal investigator of the study. Last part
@@ -192,8 +172,8 @@ public class TrialHandler extends AbstractTrialHandler {
 		 */
 		return currentUser.hasRole(Role.ROLE_P_INVESTIGATOR)
 				&& currentUser.getPerson().equals(
-						showedObject.getSponsorInvestigator())
-				&& showedObject.getStatus() != TrialStatus.FINISHED;
+						currentObject.getSponsorInvestigator())
+				&& currentObject.getStatus() != TrialStatus.FINISHED;
 	}
 
 	/**
@@ -204,16 +184,9 @@ public class TrialHandler extends AbstractTrialHandler {
 	public List<SelectItem> getStateItems() {
 		List<SelectItem> stateItems = new ArrayList<SelectItem>(
 				TrialStatus.values().length);
-		ResourceBundle tempRB = ResourceBundle.getBundle(
-				"de.randi2.jsf.i18n.trialState",
-				((LoginHandler) FacesContext
-						.getCurrentInstance()
-						.getApplication()
-						.getELResolver()
-						.getValue(
-								FacesContext.getCurrentInstance()
-										.getELContext(), null, "loginHandler"))
-						.getChosenLocale());
+		ResourceBundle tempRB = ResourceBundle
+				.getBundle("de.randi2.jsf.i18n.trialState",
+						loginHandler.getChosenLocale());
 		for (TrialStatus s : TrialStatus.values()) {
 			stateItems.add(new SelectItem(s, tempRB.getString(s.toString())));
 		}
@@ -227,7 +200,7 @@ public class TrialHandler extends AbstractTrialHandler {
 	 */
 	public void addTrialSite(ActionEvent event) {
 		if (participatingSitesAC.getSelectedObject() != null) {
-			showedObject.getParticipatingSites().add(
+			currentObject.getParticipatingSites().add(
 					participatingSitesAC.getSelectedObject());
 		}
 	}
@@ -245,7 +218,7 @@ public class TrialHandler extends AbstractTrialHandler {
 		TrialSite tTrialSite = (TrialSite) (((UIComponent) event.getComponent()
 				.getChildren().get(0)).getValueExpression("value")
 				.getValue(FacesContext.getCurrentInstance().getELContext()));
-		showedObject.getParticipatingSites().remove(tTrialSite);
+		currentObject.getParticipatingSites().remove(tTrialSite);
 
 	}
 
@@ -257,23 +230,20 @@ public class TrialHandler extends AbstractTrialHandler {
 	public String createTrial() {
 		try {
 			/* Leading Trial Site & Sponsor Investigator */
-			showedObject.setLeadingSite(trialSitesAC.getSelectedObject());
+			currentObject.setLeadingSite(trialSitesAC.getSelectedObject());
 			if (sponsorInvestigatorsAC.getSelectedObject() != null)
-				showedObject.setSponsorInvestigator(sponsorInvestigatorsAC
+				currentObject.setSponsorInvestigator(sponsorInvestigatorsAC
 						.getSelectedObject().getPerson());
 
 			// TODO Protokoll
 			// TODO Status
-			showedObject.setStatus(TrialStatus.ACTIVE);
+			currentObject.setStatus(TrialStatus.ACTIVE);
 			// configure subject properties
-			showedObject.setCriteria(configureCriteriaStep4());
-			// configure algorithm
-			configureAlgorithmWithStep5();
-
+			currentObject.setCriteria(configureCriteriaStep4());
 			// create trial
-			trialService.create(showedObject);
+			trialService.create(currentObject);
 
-			getPopups().showTrialCreatedPopup();
+			popups.showTrialCreatedPopup();
 
 			clean();
 
@@ -290,7 +260,41 @@ public class TrialHandler extends AbstractTrialHandler {
 	 * @return Either {@link Randi2#ERROR} or {@link Randi2#SUCCESS}
 	 */
 	public String saveTrial() {
-		System.out.println("Called");
+		try {
+			currentObject = trialService.update(currentObject);
+			popups.showTrialCreatedPopup();
+			editing = false;
+		} catch (IllegalArgumentException e) {
+			Randi2.showMessage(e);
+			cancelEditing();
+			return Randi2.ERROR;
+		} catch (TrialStateException e) {
+			Randi2.showMessage(e);
+			cancelEditing();
+			return Randi2.ERROR;
+		}
+		return Randi2.SUCCESS;
+	}
+
+	public String changeLeadingSite() {
+		currentObject.setLeadingSite(trialSitesAC.getSelectedObject());
+		sponsorInvestigatorsAC = null;
+		popups.hideChangeLeadingSitePopup();
+		return Randi2.SUCCESS;
+	}
+
+	public String changePInvestigator() {
+		currentObject.setSponsorInvestigator(sponsorInvestigatorsAC
+				.getSelectedObject().getPerson());
+		popups.hideChangePInvestigatorPopup();
+		return Randi2.SUCCESS;
+	}
+
+	public String cancelEditing() {
+		if (editing) {
+			currentObject = trialService.getObject(currentObject.getId());
+			editing = false;
+		}
 		return Randi2.SUCCESS;
 	}
 
@@ -319,13 +323,13 @@ public class TrialHandler extends AbstractTrialHandler {
 	 * @return
 	 */
 	public List<LogEntry> getLogEntries() {
-		return logService.getLogEntries(showedObject.getClass(),
-				showedObject.getId());
+		return logService.getLogEntries(currentObject.getClass(),
+				currentObject.getId());
 	}
 
 	public List<TrialSubject> getSubjectsList() {
-		if (showedObject != null) {
-			return trialService.getSubjects(showedObject, getLoginHandler()
+		if (currentObject != null) {
+			return trialService.getSubjects(currentObject, getLoginHandler()
 					.getLoggedInUser());
 		}
 		return null;
@@ -338,9 +342,10 @@ public class TrialHandler extends AbstractTrialHandler {
 				.getExpressionFactory()
 				.createValueExpression(
 						FacesContext.getCurrentInstance().getELContext(),
-						"#{step4}", Step4.class);
-		Step4 currentStep4 = (Step4) ve1.getValue(FacesContext
-				.getCurrentInstance().getELContext());
+						"#{subjectPropertiesConfig}",
+						SubjectPropertiesConfig.class);
+		SubjectPropertiesConfig currentStep4 = (SubjectPropertiesConfig) ve1
+				.getValue(FacesContext.getCurrentInstance().getELContext());
 		currentStep4.clean();
 
 		ValueExpression ve2 = FacesContext
@@ -349,12 +354,11 @@ public class TrialHandler extends AbstractTrialHandler {
 				.getExpressionFactory()
 				.createValueExpression(
 						FacesContext.getCurrentInstance().getELContext(),
-						"#{step5}", Step5.class);
-		Step5 currentStep5 = (Step5) ve2.getValue(FacesContext
-				.getCurrentInstance().getELContext());
+						"#{algorithmConfig}", AlgorithmConfig.class);
+		AlgorithmConfig currentStep5 = (AlgorithmConfig) ve2
+				.getValue(FacesContext.getCurrentInstance().getELContext());
 		currentStep5.clean();
-
-		setRandomizationConfig(null);
+		currentObject = null;
 		trialSitesAC = null;
 		sponsorInvestigatorsAC = null;
 	}

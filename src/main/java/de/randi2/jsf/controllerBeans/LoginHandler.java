@@ -28,7 +28,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lombok.Getter;
@@ -38,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionContextIntegrationFilter;
 
 import de.randi2.jsf.backingBeans.RegisterPage;
 import de.randi2.jsf.exceptions.RegistrationException;
@@ -54,8 +52,8 @@ import de.randi2.model.TrialSite;
 import de.randi2.services.TrialSiteService;
 import de.randi2.services.UserService;
 import de.randi2.utility.logging.LogEntry;
-import de.randi2.utility.logging.LogService;
 import de.randi2.utility.logging.LogEntry.ActionType;
+import de.randi2.utility.logging.LogService;
 
 /**
  * <p>
@@ -70,69 +68,73 @@ public class LoginHandler extends AbstractHandler<Login> {
 	/*
 	 * Services classes to work with - provided via JSF/Spring brige.
 	 */
-	
+
 	@Setter
 	private UserService userService;
 
 	@Setter
 	private LogService logService;
-	
+
 	@Setter
 	private TrialSiteService siteService;
 
-	
 	/*
 	 * Reference to the application popup logic.
 	 */
-	
+
 	@Setter
 	private Popups popups;
 
 	/*
-	 * Current signed in user. 
+	 * Current signed in user.
 	 */
-	
+
 	@Setter
 	private Login loggedInUser = null;
 
 	/*
-	 * Current (chosen) locale of the UI. 
+	 * Current (chosen) locale of the UI.
 	 */
-	
+
 	@Setter
 	private Locale chosenLocale = null;
 
 	/*
-	 * newUser - object for the self registration process
-	 * tsPasswort - trail site password for the self registration process
+	 * newUser - object for the self registration process tsPasswort - trail
+	 * site password for the self registration process
 	 */
 	private Login newUser = null;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String tsPassword = null;
 
 	/*
-	 * The autocomplete objects used during the registrations process (trialSitesAC - with all stored trial sites) and rolesAC for the user creation and editing process with all defined roles. 
+	 * The autocomplete objects used during the registrations process
+	 * (trialSitesAC - with all stored trial sites) and rolesAC for the user
+	 * creation and editing process with all defined roles.
 	 */
-	
+
 	private AutoCompleteObject<TrialSite> trialSitesAC = null;
 	private AutoCompleteObject<Role> rolesAC = null;
-	
+
 	/*
-	 *  UI logic
+	 * UI logic
 	 */
-	
+
 	/**
 	 * ActionListener for the "add role" event.
+	 * 
 	 * @param event
 	 */
 	public void addRole(ActionEvent event) {
 		assert (rolesAC.getSelectedObject() != null);
 		assert (userService != null);
-		userService.addRole(showedObject, rolesAC.getSelectedObject());
+		userService.addRole(currentObject, rolesAC.getSelectedObject());
 	}
 
 	/**
 	 * ActionListener for the "remove role" event.
+	 * 
 	 * @param event
 	 */
 	public void removeRole(ActionEvent event) {
@@ -140,14 +142,15 @@ public class LoginHandler extends AbstractHandler<Login> {
 		Role tRole = (Role) (((UIComponent) event.getComponent().getChildren()
 				.get(0)).getValueExpression("value").getValue(FacesContext
 				.getCurrentInstance().getELContext()));
-		userService.removeRole(showedObject, tRole);
+		userService.removeRole(currentObject, tRole);
 	}
 
 	/**
 	 * Action Method for the "change password" action.
+	 * 
 	 * @return
 	 */
-	public String changePassword() { 
+	public String changePassword() {
 		this.saveObject();
 		popups.hideChangePasswordPopup();
 		return Randi2.SUCCESS;
@@ -155,11 +158,13 @@ public class LoginHandler extends AbstractHandler<Login> {
 
 	/**
 	 * Action Method for the "change trial site" action.
+	 * 
 	 * @return
 	 */
 	public String changeTrialSite() {
-		if(trialSitesAC.getSelectedObject() != null){
-			showedObject.getPerson().setTrialSite(trialSitesAC.getSelectedObject());
+		if (trialSitesAC.getSelectedObject() != null) {
+			currentObject.getPerson().setTrialSite(
+					trialSitesAC.getSelectedObject());
 			popups.hideChangeTrialSitePopup();
 			this.saveObject();
 			return Randi2.SUCCESS;
@@ -174,9 +179,9 @@ public class LoginHandler extends AbstractHandler<Login> {
 	 */
 	@Override
 	public String saveObject() {
-		assert (showedObject != null);
+		assert (currentObject != null);
 		try {
-			showedObject = userService.update(showedObject);
+			currentObject = userService.update(currentObject);
 			// Making the pop up visible
 			popups.setUserSavedPVisible(true);
 			return Randi2.SUCCESS;
@@ -184,8 +189,8 @@ public class LoginHandler extends AbstractHandler<Login> {
 			Randi2.showMessage(exp);
 			return Randi2.ERROR;
 		} finally {
-			if (showedObject.getId() == loggedInUser.getId())
-				loggedInUser = showedObject;
+			if (currentObject.getId() == loggedInUser.getId())
+				loggedInUser = currentObject;
 			refresh();
 		}
 	}
@@ -196,15 +201,16 @@ public class LoginHandler extends AbstractHandler<Login> {
 	 * @return Randi2.SUCCESS normally. Randi2.ERROR in case of an error.
 	 */
 	public String registerUser() {
-		
+
 		/*
-		 * TODO We could try to move the newUser and tsPassword object as well as a part of this functionality into the RegisterPage bean.
+		 * TODO We could try to move the newUser and tsPassword object as well
+		 * as a part of this functionality into the RegisterPage bean.
 		 */
-		
+
 		try {
 			if (creatingMode) {
 				// A new user was created by another logged in user
-				newUser = showedObject;
+				newUser = currentObject;
 			} else {
 				// Normal self-registration - trial site password check!
 				assert (newUser != null);
@@ -228,8 +234,11 @@ public class LoginHandler extends AbstractHandler<Login> {
 			userService.register(newUser);
 			// Making the successPopup visible (NORMAL REGISTRATION)
 			if (!creatingMode) {
-				((RegisterPage) FacesContext.getCurrentInstance()
-						.getApplication().getELResolver().getValue(
+				((RegisterPage) FacesContext
+						.getCurrentInstance()
+						.getApplication()
+						.getELResolver()
+						.getValue(
 								FacesContext.getCurrentInstance()
 										.getELContext(), null, "registerPage"))
 						.setRegPvisible(true);
@@ -245,9 +254,7 @@ public class LoginHandler extends AbstractHandler<Login> {
 			return Randi2.SUCCESS;
 		} catch (InvalidStateException exp) {
 			for (InvalidValue v : exp.getInvalidValues()) {
-				Randi2
-						.showMessage(v.getPropertyName() + " : "
-								+ v.getMessage());
+				Randi2.showMessage(v.getPropertyName() + " : " + v.getMessage());
 			}
 			return Randi2.ERROR;
 		} catch (Exception e) {
@@ -286,10 +293,10 @@ public class LoginHandler extends AbstractHandler<Login> {
 	 */
 	@Override
 	public String refreshShowedObject() {
-		if (showedObject.getId() == AbstractDomainObject.NOT_YET_SAVED_ID)
-			showedObject = null;
+		if (currentObject.getId() == AbstractDomainObject.NOT_YET_SAVED_ID)
+			currentObject = null;
 		else
-			showedObject = userService.getObject(showedObject.getId());
+			currentObject = userService.getObject(currentObject.getId());
 		trialSitesAC = null;
 		refresh();
 		return Randi2.SUCCESS;
@@ -306,11 +313,12 @@ public class LoginHandler extends AbstractHandler<Login> {
 	}
 
 	/*
-	 *  GET & SET Methods
+	 * GET & SET Methods
 	 */
-	
+
 	/**
 	 * Provides the current logged in user.
+	 * 
 	 * @return
 	 */
 	public Login getLoggedInUser() {
@@ -318,6 +326,11 @@ public class LoginHandler extends AbstractHandler<Login> {
 			try {
 				loggedInUser = (Login) SecurityContextHolder.getContext()
 						.getAuthentication().getPrincipal();
+				/*
+				 * Reloading the user from the database to ensure that the
+				 * object is attached to the correct session
+				 */
+				loggedInUser = userService.getObject(loggedInUser.getId());
 				loggedInUser.setLastLoggedIn(new GregorianCalendar());
 			} catch (NullPointerException exp) {
 				Logger.getLogger(this.getClass()).debug("NPE", exp);
@@ -355,18 +368,21 @@ public class LoginHandler extends AbstractHandler<Login> {
 		return this.chosenLocale;
 	}
 
-
 	/**
-	 * This method specifies if the object that is currently showed in the UI, is editable or not.
+	 * This method specifies if the object that is currently showed in the UI,
+	 * is editable or not.
+	 * 
 	 * @return
 	 */
 	public boolean isEditable() {
 		PermissionVerifier permissionVerifier = ((PermissionVerifier) FacesContext
-				.getCurrentInstance().getApplication().getELResolver()
+				.getCurrentInstance()
+				.getApplication()
+				.getELResolver()
 				.getValue(FacesContext.getCurrentInstance().getELContext(),
 						null, "permissionVerifier"));
-		if (showedObject.equals(this.loggedInUser)
-				|| permissionVerifier.isAllowedEditUser(showedObject)) {
+		if (currentObject.equals(this.loggedInUser)
+				|| permissionVerifier.isAllowedEditUser(currentObject)) {
 			editable = true;
 		} else {
 			editable = creatingMode;
@@ -389,6 +405,7 @@ public class LoginHandler extends AbstractHandler<Login> {
 
 	/**
 	 * Returns the trial sites auto complete object (object is a singleton).
+	 * 
 	 * @return
 	 */
 	public AutoCompleteObject<TrialSite> getTrialSitesAC() {
@@ -399,6 +416,7 @@ public class LoginHandler extends AbstractHandler<Login> {
 
 	/**
 	 * Returns the user roles auto complete object (object is a singleton).
+	 * 
 	 * @return
 	 */
 	public AutoCompleteObject<Role> getRolesAC() {
@@ -422,10 +440,14 @@ public class LoginHandler extends AbstractHandler<Login> {
 				.getCurrentInstance().getExternalContext().getSession(false);
 		session.setAttribute(Randi2.RANDI2_END, "The end");
 		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect(
-					FacesContext.getCurrentInstance().getExternalContext()
-							.getRequestContextPath()
-							+ Randi2.SECURE_LOGOUT_PATH);
+			FacesContext
+					.getCurrentInstance()
+					.getExternalContext()
+					.redirect(
+							FacesContext.getCurrentInstance()
+									.getExternalContext()
+									.getRequestContextPath()
+									+ Randi2.SECURE_LOGOUT_PATH);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -437,19 +459,22 @@ public class LoginHandler extends AbstractHandler<Login> {
 	 * @param event
 	 */
 	public void createAssistant(ActionEvent event) {
-		if (showedObject != null)
-			showedObject.getPerson().setAssistant(new Person());
+		if (currentObject != null)
+			currentObject.getPerson().setAssistant(new Person());
 	}
 
 	/**
 	 * Provides the audit log entries for the showed object.
+	 * 
 	 * @return
 	 */
 	public List<LogEntry> getLogEntries() {
-		return logService.getLogEntries(showedObject.getUsername());
+		return logService.getLogEntries(currentObject.getUsername());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.randi2.jsf.controllerBeans.AbstractHandler#createPlainObject()
 	 */
 	@Override
