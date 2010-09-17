@@ -36,7 +36,7 @@ public class InstallerServiceImpl implements InstallerService {
 	@Override
 	public boolean isConfigured() throws Exception {
 
-		return null != configDao.getAll().get(0);F
+		return null != configDao.getAll().get(0);
 	}
 
 	@Override
