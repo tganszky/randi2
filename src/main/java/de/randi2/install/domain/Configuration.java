@@ -1,6 +1,7 @@
 package de.randi2.install.domain;
 
-import java.net.URL;
+import java.io.File;
+
 
 import javax.persistence.Entity;
 
@@ -29,6 +30,8 @@ import de.randi2.utility.validations.UrlRANDI2;
 public class Configuration extends AbstractDomainObject {
 
 	private static final long serialVersionUID = 1185826192804499840L;
+	/** Flag for self registration */
+	private boolean selfRegistration = true;
 
 	public Configuration() {
 
@@ -94,4 +97,9 @@ public class Configuration extends AbstractDomainObject {
 	@NotNull
 	private String infoAboutHost;
 
+	/**
+	 * Image File for Logo
+	 */
+	@NotNull
+	private File logo;
 }

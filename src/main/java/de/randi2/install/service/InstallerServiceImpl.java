@@ -2,49 +2,46 @@ package de.randi2.install.service;
 
 import java.io.File;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.randi2.install.dao.ConfigurationDao;
 import de.randi2.install.domain.Configuration;
 
 @Service("InstallerService")
-public class InstallerServiceImpl   implements  InstallerService{
+public class InstallerServiceImpl implements InstallerService {
+
+	@Autowired
+	private ConfigurationDao configDao;
 
 	@Override
 	public void applyConfiguration(Configuration c) {
-		// TODO Auto-generated method stub
-		
+		configDao.update(c);
 	}
 
 	@Override
-	public File getCurrentConfiguration() {
-		// TODO Auto-generated method stub
+	public File exportCurrentConfiguration() {
+
+		configDao.getAll();
+		// TODO generate file with contents of configuration
 		return null;
 	}
 
 	@Override
-	public Configuration getInstallationConfig() {
-		// TODO Auto-generated method stub
-		return null;
+	public Configuration getCurrentConfiguration() {
+		// 
+		return configDao.getAll().get(0);
 	}
 
 	@Override
 	public boolean isConfigured() throws Exception {
-		// todo check
-		return false;
+
+		return null != configDao.getAll().get(0);F
 	}
 
 	@Override
 	public void applyConfiguration(File f) {
-		// TODO Auto-generated method stub
-		
+		// TODO create configuration from file
 	}
 
-
-
-	
-
-
-
 }
-

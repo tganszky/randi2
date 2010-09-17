@@ -31,7 +31,7 @@ interface InstallerService {
 	 * 
 	 * @return configuration of this randi2 installation
 	 */
-	public Configuration getInstallationConfig();
+	public Configuration getCurrentConfiguration();
 
 	/**
 	 * Returns current Configuration of this randi2 installation as a .conf file
@@ -39,7 +39,7 @@ interface InstallerService {
 	 * @return file with all configuration parameters
 	 */
 
-	public File getCurrentConfiguration();
+	public File exportCurrentConfiguration();
 
 	
 	/**
