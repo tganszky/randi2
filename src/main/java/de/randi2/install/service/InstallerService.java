@@ -10,7 +10,7 @@ import de.randi2.install.domain.Configuration;
  * 
  * @author Thomas Ganszky
  */
-interface InstallerService {
+public interface InstallerService {
 
 	/**
 	 * 

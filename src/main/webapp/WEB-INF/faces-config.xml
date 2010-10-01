@@ -442,6 +442,19 @@
 			<value>#{popups}</value>
 		</managed-property>
 	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>installationHandler</managed-bean-name>
+		<managed-bean-class>de.randi2.install.controllerBeans.InstallationHandler</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>instService</property-name>
+			<property-class>de.randi2.install.service.InstallerService</property-class>
+			<value>#{instService}</value>
+		</managed-property>
+	</managed-bean>
+	
+	
 
 	<navigation-rule>
 		<display-name>refresh</display-name>

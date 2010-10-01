@@ -83,22 +83,22 @@ public class HibernateWebFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		httpSession = ((HttpServletRequest) request).getSession();
-		hibernateSession = (Session) httpSession
-				.getAttribute(HIBERNATE_SESSION_KEY);
-		this.response = (HttpServletResponse) response;
-		logger.trace("HibernateWebFilter | " + httpSession.getId());
-		ensureHibernateSessionExistance();
-		/*
-		 * Go and do the work ...
-		 */
-		try {
-			chain.doFilter(request, response);
-		} catch (Exception e) {
-			invalidateOnError(e, this.response);
-			return;
-		}
-		storeOrCloseHibernateSession();
+//		httpSession = ((HttpServletRequest) request).getSession();
+//		hibernateSession = (Session) httpSession
+//				.getAttribute(HIBERNATE_SESSION_KEY);
+//		this.response = (HttpServletResponse) response;
+//		logger.trace("HibernateWebFilter | " + httpSession.getId());
+//		ensureHibernateSessionExistance();
+//		/*
+//		 * Go and do the work ...
+//		 */
+//		try {
+//			chain.doFilter(request, response);
+//		} catch (Exception e) {
+//			invalidateOnError(e, this.response);
+//			return;
+//		}
+//		storeOrCloseHibernateSession();
 	}
 
 	/**
