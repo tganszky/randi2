@@ -20,5 +20,5 @@
 	<context:component-scan base-package="de.randi2.install" />
 	
 
-	<bean id="InstallerService" class="de.randi2.install.service.InstallerServiceImpl" />
+	<bean id="instService" class="de.randi2.install.service.InstallerServiceImpl" />
 </beans>
