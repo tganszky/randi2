@@ -14,12 +14,21 @@
 			<value>true</value>
 		</property>
 	</bean>
+<<<<<<< HEAD
 
 <!-- 	<bean id="liquibase" class="de.randi2.utility.logging.Randi2SpringLiquibase">
 		<property name="dataSource" ref="dataSource" />
 		<property name="changeLog" value="classpath:META-INF/database/database_changelog.xml" />
 	</bean>
  -->
+=======
+<!--  
+	<bean id="liquibase" class="de.randi2.utility.logging.Randi2SpringLiquibase">
+		<property name="dataSource" ref="dataSource" />
+		<property name="changeLog" value="classpath:META-INF/database/database_changelog.xml" />
+	</bean>
+-->
+>>>>>>> randi2_jsf2
 	<context:annotation-config />
 	<context:spring-configured></context:spring-configured>
 
