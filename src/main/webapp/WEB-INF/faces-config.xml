@@ -60,10 +60,7 @@
 		<converter-id>de.randi2.jsf.converters.BLOCKRANDOMIZATION_TYPE_CONVERTER</converter-id>
 		<converter-class>de.randi2.jsf.converters.BlockRandomizationTypeConverter</converter-class>
 	</converter>
-<<<<<<< HEAD
-=======
 	
->>>>>>> f6601c529631d4275083b5118768c1528fba595a
 	<navigation-rule>
 		<display-name>refresh</display-name>
 		<from-view-id>/randi2.xhtml</from-view-id>
