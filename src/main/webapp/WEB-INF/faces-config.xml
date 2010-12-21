@@ -31,8 +31,6 @@
 			<var>roles</var>
 		</resource-bundle>
 		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
-		<view-handler>com.icesoft.faces.facelets.D2DFaceletViewHandler</view-handler>
-		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 		<locale-config>
 			<default-locale>en_US</default-locale>
 			<supported-locale>de_DE</supported-locale>
@@ -62,12 +60,16 @@
 		<converter-id>de.randi2.jsf.converters.BLOCKRANDOMIZATION_TYPE_CONVERTER</converter-id>
 		<converter-class>de.randi2.jsf.converters.BlockRandomizationTypeConverter</converter-class>
 	</converter>
+<<<<<<< HEAD
+=======
+	
+>>>>>>> f6601c529631d4275083b5118768c1528fba595a
 	<navigation-rule>
 		<display-name>refresh</display-name>
 		<from-view-id>/randi2.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>refresh</from-outcome>
-			<to-view-id>/randi2.xthml</to-view-id>
+			<to-view-id>/randi2.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
