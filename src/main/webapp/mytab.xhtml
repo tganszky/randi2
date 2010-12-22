@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<h:head>
+
+	<title><ui:insert name="title">RANDI2 Installer</ui:insert></title>
+
+	<ice:outputStyle href="/xmlhttp/css/rime/rime.css" />
+	<ice:outputStyle href="/RANDI2.css" />
+</h:head>
+
+<h:body>
+	<div id="content">
+	<div class="body">
+	<div class="centeredContent"><ice:form>
+
+
+		<ice:panelGroup styleClass="icePnlClpsbl">
+			<ice:panelGroup styleClass="icePnlClpsblHdr">
+				<ice:graphicImage value="/img/randi2_small.png"></ice:graphicImage>
+			</ice:panelGroup>
+
+			<ice:panelTabSet border="2" align="center" frame="border"
+				tabPlacement="Top" selectedIndex="#{tabPanel.focusIndex}"
+				tabChangeListener="#{tabPanel.processTabChange}"
+				title="This is title" summary="zusammenfassung">
+
+
+				<ice:panelTab label="Schritt 1" styleClass="contentPane">
+					<ice:panelGrid columns="2">
+						<ice:panelGroup>
+							<h1>Schritt 1, Willkommen bei der Installation</h1>
+							<p>asdyxc</p>
+
+							<ice:commandButton value="TabSwitch to #{tabPanel.nextIndex}"
+								actionListener="#{tabPanel.switchGroup}" />
+						</ice:panelGroup>
+					</ice:panelGrid>
+				</ice:panelTab>
+
+				<ice:panelTab label="Schritt 2" styleClass="contentPane">
+
+					<h1>Schritt 2, ersten Benutzer anlegen</h1>
+					<p><br> <ice:outputLabel for="titleselection"
+						value="Titel " /> <ice:selectOneMenu id="titleselection"
+						valueChangeListener="#{tabPanel.valueChangeListener}"
+						value="#{tabPanel.title}" partialSubmit="true">
+						<f:selectItems id="titlesItems" value="#{tabPanel.titleItems}" />
+					</ice:selectOneMenu></br>
+					<br><ice:outputText value="Vorname " /> <ice:inputText
+						value="#{tabPanel.firstname}" partialSubmit="true" /></br>
+					<br><ice:outputText value="Nachname " /> <ice:inputText
+						value="#{tabPanel.lastname}" partialSubmit="true" /> </br>
+					<br><ice:outputText for="sexselection" value="Geschlecht" />
+					<ice:selectOneMenu id="sexselection"
+						valueChangeListener="#{tabPanel.valueChangeListener}"
+						value="#{tabPanel.sex}" partialSubmit="true">
+						<f:selectItems id="sexItems" value="#{tabPanel.sexArr}" />
+					</ice:selectOneMenu></br>
+					<br><ice:outputText value="Email" /> <ice:inputText
+						value="#{tabPanel.email}" /></br>
+					<br> 6.telefon </br>
+					<br>7.handy (optional) 8.fax (optional) </br>
+					<br>9.Assistant (optional, same data as above) </br>
+					</p>
+					<ice:commandButton value="TabSwitch to #{tabPanel.nextIndex}"
+						actionListener="#{tabPanel.switchGroup}" />
+				</ice:panelTab>
+
+				<ice:panelTab label="Schritt 3" styleClass="contentPane">
+
+					<h1>Schritt 3, Technische Daten</h1>
+					<p>laskjdnlaksjdn</p>
+					<ice:commandButton value="TabSwitch to #{tabPanel.nextIndex}"
+						actionListener="#{tabPanel.switchGroup}" />
+				</ice:panelTab>
+				<ice:panelTab label="Schritt 4" styleClass="contentPane">
+
+					<h1>Schritt 4, installation abschliessen und einloggen gehen</h1>
+					<p><br>asdasdasd</br>
+					</p>
+				</ice:panelTab>
+			</ice:panelTabSet>
+
+
+		</ice:panelGroup>
+
+
+	</ice:form></div>
+	</div>
+	</div>
+</h:body>
+</html>
